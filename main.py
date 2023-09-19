@@ -1,12 +1,13 @@
 import json
 import logging
 import os
+import time
 from typing import Any
 
 from dotenv import load_dotenv
 load_dotenv()
 
-from utils.notion import ask_notion_to_shorten, ask_notion_to_summarize
+from utils.chatgpt import ask_chatgpt
 from utils.atlassian_jira import get_krisp_jira, is_story_with_epic, is_story_without_epic, is_other_issue, is_unreleased_release, starts_with_date, get_issue_field
 from slack_bolt import App, Ack
 from slack_bolt.adapter.socket_mode import SocketModeHandler
@@ -18,6 +19,8 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
+
+CHATGPT_INTERVAL = 21 # 20 seconds but add 1 just to be sure
 
 SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN'].strip()
 SLACK_APP_TOKEN = os.environ['SLACK_APP_TOKEN'].strip()
@@ -32,14 +35,18 @@ def get_project_settings(project_name: str) -> dict[str, Any]:
 
 
 def format_issue_row(issue):
-    return f'<{issue.permalink()}|{issue.key}> {ask_notion_to_shorten(str(get_issue_field(issue, "summary")))}\n'
+    time.sleep(CHATGPT_INTERVAL)
+    reworded_version = ask_chatgpt(f'As a project manager, provide a more appealing version of a Jira issue summary: {str(get_issue_field(issue, "summary"))}')
+    stripped_version = reworded_version.strip().strip('"')
+    return f'<{issue.permalink()}|{issue.key}> {stripped_version}\n'
 
 
 def format_issue_row_with_desciption(issue):
     summary_line = format_issue_row(issue)
     if hasattr(issue.fields, 'description'):
-        description = ask_notion_to_summarize(issue.fields.description)
-        return summary_line + '- ' + description + '\n'
+        time.sleep(CHATGPT_INTERVAL)
+        description = ask_chatgpt(f'As a project manager, provide a more appealing version (don\'t capitalise regular words and provide bullet points in past tense with - sign) of a Jira issue description: {issue.fields.description}')
+        return summary_line + description + '\n'
     else:
         return summary_line
 

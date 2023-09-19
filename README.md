@@ -28,7 +28,7 @@ Also, for the app to work you need to provide some environment variables. Those 
 | **JIRA_BASE_URL** | Base url of your Jira instance |
 | **JIRA_USER_EMAIL** | Email of user the app will use to navigate Jira issues |
 | **JIRA_USER_API_TOKEN** | Jira API token for authentication |
-| **NOTIONAI_API_TOKEN** | Notion API token for authentication |
+| **OPENAI_API_KEY** | OpenAI API token for authentication |
 | **SLACK_BOT_TOKEN** | Slack Bot token for authentication |
 | **SLACK_APP_TOKEN** | Slack App token for authentication |
 
@@ -55,7 +55,7 @@ Another way is to create `.env` file in the same folder `main.py` is located wit
 JIRA_BASE_URL='...'
 JIRA_USER_EMAIL='...'
 JIRA_USER_API_TOKEN='...'
-NOTIONAI_API_TOKEN='...'
+OPENAI_API_KEY='...'
 SLACK_BOT_TOKEN='...'
 SLACK_APP_TOKEN='...'
 ```
