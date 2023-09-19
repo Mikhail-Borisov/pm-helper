@@ -20,6 +20,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+DEBUG = os.environ.get('DEBUG', 'false')
 CHATGPT_INTERVAL = 21 # 20 seconds but add 1 just to be sure
 
 SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN'].strip()
@@ -36,17 +37,23 @@ def get_project_settings(project_name: str) -> dict[str, Any]:
 
 def format_issue_row(issue):
     time.sleep(CHATGPT_INTERVAL)
-    reworded_version = ask_chatgpt(f'As a project manager, provide a more appealing version of a Jira issue summary: {str(get_issue_field(issue, "summary"))}')
+    reworded_version = ask_chatgpt(f'As a project manager, provide a more appealing version of the following Jira issue summary: {str(get_issue_field(issue, "summary"))}')
     stripped_version = reworded_version.strip().strip('"')
-    return f'<{issue.permalink()}|{issue.key}> {stripped_version}\n'
+    if DEBUG == 'true':
+        return f'<{issue.permalink()}|{issue.key}> {stripped_version}\n' + f'*Original*: {str(get_issue_field(issue, "summary"))}\n'
+    else:
+        return f'<{issue.permalink()}|{issue.key}> {stripped_version}\n'
 
 
 def format_issue_row_with_desciption(issue):
     summary_line = format_issue_row(issue)
     if hasattr(issue.fields, 'description'):
         time.sleep(CHATGPT_INTERVAL)
-        description = ask_chatgpt(f'As a project manager, provide a more appealing version (don\'t capitalise regular words and provide bullet points in past tense with - sign) of a Jira issue description: {issue.fields.description}')
-        return summary_line + description + '\n'
+        description = ask_chatgpt(f'As a project manager, provide a more appealing version (don\'t capitalise regular words and provide bullet points in past tense with - sign) of the following Jira issue description: {issue.fields.description}')
+        if DEBUG == 'true':
+            return summary_line + description + '\n' + '*Original description*: ' + issue.fields.description + '\n'
+        else:
+            return summary_line + description + '\n'
     else:
         return summary_line
 
@@ -104,15 +111,6 @@ def release_notes(ack: Ack, command: dict, client: WebClient):
         client.chat_postMessage(
             channel=channel_id,
             text=release_message,
-            blocks=[
-                {
-                    'type': 'section',
-                    'text': {
-                        'type': 'mrkdwn',
-                        'text': release_message
-                    }
-                }
-            ],
             unfurl_links=False,
             unfurl_media=False
         )

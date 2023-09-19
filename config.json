@@ -3,8 +3,7 @@
         "full_name": "Krisp Web Team (WEB)",
         "release_name": "PLG Core Web",
         "mentions": [
-            "@pd_team",
-            "@cc_team",
+            "@U05STH6ADJN",
             "@U05T5ME3G3T"
         ]
     },
@@ -12,16 +11,7 @@
         "full_name": "Krisp Electron",
         "release_name": "Krisp Electron",
         "mentions": [
-            "@dummy"
-        ]
-    },
-    "SCRUM": {
-        "full_name": "My Scrum Project",
-        "release_name": "MSP",
-        "mentions": [
-            "@team",
-            "@boss",
-            "@other_boss"
+            "@U05T5ME3G3T"
         ]
     }
 }
