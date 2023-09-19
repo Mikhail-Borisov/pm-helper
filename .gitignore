@@ -1,6 +1,41 @@
-.vscode
-
+# Distribution / packaging
 bin
-include
+build
+develop-eggs
+dist
+eggs
 lib
 lib64
+parts
+sdist
+var
+include
+*.egg-info
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Translations
+*.mo
+
+# Byte-compiled / optimized / DLL files
+__pycache__
+*.py[cod]
+
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# VS Code
+.vscode
+
+# Environment variables
+.env
+
+# Log files
+*.log
